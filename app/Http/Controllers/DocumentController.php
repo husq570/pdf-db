@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Document;
+use App\Models\Category;
 
 class DocumentController extends Controller
 {
@@ -13,7 +15,16 @@ class DocumentController extends Controller
      */
     public function index()
     {
-        //
+        $category = request()->category;
+        if($category){
+            $documents = Document::where('category_id', $category)->paginate(9);
+        }else{
+            $documents = Document::paginate(9);
+        }
+
+        $categories = Category::all();
+
+        return view('documents.index', compact('documents', 'categories'));
     }
 
     /**

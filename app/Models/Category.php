@@ -15,4 +15,8 @@ class Category extends Model
         'sort_order',
     ];
 
+    public function document()
+    {
+        return $this->hasMany(Document::class);
+    }
 }
