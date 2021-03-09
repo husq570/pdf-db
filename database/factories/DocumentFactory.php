@@ -28,6 +28,7 @@ class DocumentFactory extends Factory
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->text,
+            'file_path' => "testas.pdf",
             'status' => Arr::random($status),
             'category_id' => Category::inRandomOrder()->first(),
         ];
