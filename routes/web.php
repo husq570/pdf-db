@@ -18,7 +18,7 @@ use App\Http\Controllers\DocumentController;
 
 Route::get('/',[HomeController::class, 'index'])->name('home');
 
-Route::resource('documents', DocumentController::class);
+Route::resource('documents', DocumentController::class)->middleware(['auth']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

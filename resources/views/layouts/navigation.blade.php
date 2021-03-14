@@ -37,6 +37,12 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <!-- Create Document -->
+                        @can('publish documents')
+                        <x-dropdown-link :href="route('documents.create')">
+                            {{ __('Create Document') }}
+                        </x-dropdown-link>
+                        @endcan
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

@@ -23,7 +23,6 @@
     </x-slot>
 
     <div class="py-6">
-
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200">
                 <div class="grid grid-cols-3 gap-4">
