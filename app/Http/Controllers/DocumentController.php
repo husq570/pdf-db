@@ -71,7 +71,19 @@ class DocumentController extends Controller
      */
     public function show($id)
     {
-        //
+        $document = Document::findOrFail($id);
+        $path = public_path('storage/uploads/'.$document->file_path);
+        // phpinfo();
+        // $im = new imagick($path);
+        // $im->setImageFormat('jpg');
+        // header('Content-Type: image/jpeg');
+        // echo $im;
+
+        // if (file_exists($path)) {
+        //     return response()->download($path);
+        // }
+
+        //return view('documents.show', compact('document'));
     }
 
     /**
@@ -80,9 +92,13 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Document $document)
     {
-        //
+        $categories = Category::all();
+
+        $old_category = Category::find(request()->old('category'));
+
+        return view('documents.edit', compact('document', 'categories', 'old_category'));
     }
 
     /**
@@ -92,9 +108,18 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Document $document)
     {
-        //
+        $data = $this->validateRequest();
+
+        $document_name = 'categories/'.$data['category_id'].'/'.time().'.'.$request->file->getClientOriginalExtension();
+        $request->file->move(public_path('storage/uploads/categories/'.$data['category_id']), $document_name);
+        $data['file_path'] = $document_name;
+        unset($data['file']);
+
+        $document->update($data);
+
+        return back()->with('success', 'Document updated successfully.');
     }
 
     /**
@@ -103,9 +128,11 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Document $document)
     {
-        //
+        $document->delete();
+
+        return redirect('documents')->with('success', 'Document successfully deleted!');
     }
 
     private function validateRequest()

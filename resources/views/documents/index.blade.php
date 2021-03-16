@@ -28,17 +28,26 @@
                 <div class="grid grid-cols-3 gap-4">
                     @foreach($documents as $document)
                     <div>
-                        <div class="col-1">
-                            ID: {{ $document->id }}
-                        </div>
-                        <div class="col-3">
-                            Name: {{ $document->name }}
-                        </div>
-                        <div>
-                            Category: {{ $document->category->name }}
-                        </div>
-                        <div class="col-2">
-                            Status: {{ $document->status }}
+                        <div class="max-w-2xl bg-white border-2 border-gray-300 p-5 rounded-md tracking-wide shadow-lg">
+                            <div id="header" class="flex">
+                                <div class="w-32 rounded-md">
+                                    <img alt="{{ $document->name }}" src="https://picsum.photos/seed/picsum/200" />
+                                </div>
+                                <div id="body" class="flex flex-col ml-5">
+                                    <h4 id="name" class="text-lg font-normal mb-2"><a href="{{ route('documents.show', ['document' => $document]) }}">{{ $document->name }}</a></h4>
+                                    <p id="job" class="text-gray-800 mt-2">{{ Str::limit($document->description, 50) }}</p>
+                                    @if(auth()->user()->hasRole('super-admin'))
+                                        <div class="flex mt-5">
+                                            <a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 mr-1 rounded" href="{{ route('documents.edit', ['document' => $document]) }}">Edit</a>
+                                            <form action="{{ route('documents.destroy', ['document' => $document]) }}" method="post">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded" type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                     @endforeach
