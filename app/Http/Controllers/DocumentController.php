@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Document;
 use App\Models\Category;
+use Spatie\PdfToImage\Pdf;
+use Org_Heigl\Ghostscript\Ghostscript;
+use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
@@ -51,12 +54,14 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->validateRequest();
+        $data = $this->validateRequestStore();
 
-        $document_name = 'categories/'.$data['category_id'].'/'.time().'.'.$request->file->getClientOriginalExtension();
+        $document_name = $data['category_id'].'/'.Str::slug($request->name).'.'.$request->file->getClientOriginalExtension();
         $request->file->move(public_path('storage/uploads/categories/'.$data['category_id']), $document_name);
         $data['file_path'] = $document_name;
         unset($data['file']);
+        $pdf = new Pdf(public_path('storage/uploads/categories/'.$document_name));
+        $pdf->saveImage(public_path('storage/uploads/categories/'.$data['category_id'].'/'.Str::slug($request->name).'.png'));
 
         $document = Document::create($data);
 
@@ -72,18 +77,8 @@ class DocumentController extends Controller
     public function show($id)
     {
         $document = Document::findOrFail($id);
-        $path = public_path('storage/uploads/'.$document->file_path);
-        // phpinfo();
-        // $im = new imagick($path);
-        // $im->setImageFormat('jpg');
-        // header('Content-Type: image/jpeg');
-        // echo $im;
 
-        // if (file_exists($path)) {
-        //     return response()->download($path);
-        // }
-
-        //return view('documents.show', compact('document'));
+        return view('documents.show', compact('document'));
     }
 
     /**
@@ -110,12 +105,16 @@ class DocumentController extends Controller
      */
     public function update(Request $request, Document $document)
     {
-        $data = $this->validateRequest();
+        $data = $this->validateRequestUpdate();
 
-        $document_name = 'categories/'.$data['category_id'].'/'.time().'.'.$request->file->getClientOriginalExtension();
-        $request->file->move(public_path('storage/uploads/categories/'.$data['category_id']), $document_name);
-        $data['file_path'] = $document_name;
-        unset($data['file']);
+        if($request->file){
+            $document_name = $data['category_id'].'/'.Str::slug($request->name).'.'.$request->file->getClientOriginalExtension();
+            $request->file->move(public_path('storage/uploads/categories/'.$data['category_id']), $document_name);
+            $data['file_path'] = $document_name;
+            unset($data['file']);
+            $pdf = new Pdf(public_path('storage/uploads/categories/'.$document_name));
+            $pdf->saveImage(public_path('storage/uploads/categories/'.$data['category_id'].'/'.Str::slug($request->name).'.png'));
+        }
 
         $document->update($data);
 
@@ -135,7 +134,20 @@ class DocumentController extends Controller
         return redirect('documents')->with('success', 'Document successfully deleted!');
     }
 
-    private function validateRequest()
+    private function validateRequestUpdate()
+    {
+        $validatedData = request()->validate([
+            'name' => 'required|min:3',
+            'description' => 'required|min:3|max:128',
+            'file' => 'sometimes|mimetypes:application/pdf',
+            'category_id' => 'required',
+            'status' => 'required',
+        ]);
+
+        return $validatedData;
+    }
+
+    private function validateRequestStore()
     {
         $validatedData = request()->validate([
             'name' => 'required|min:3',

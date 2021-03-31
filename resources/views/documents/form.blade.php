@@ -37,8 +37,8 @@
 <div class="mt-4">
     <label class="block font-medium text-sm text-gray-700" for="status">Status</label>
     <select class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block mt-1 w-full" name="status" class="form-control" id="frm-active">
-        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Enabled</option>
-        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Disabled</option>
+        <option value="0" {{ old('status') ?? $document->status == 0 ? 'selected' : '' }}>Disabled</option>
+        <option value="1" {{ old('status') ?? $document->status == 1 ? 'selected' : '' }}>Enabled</option>
     </select>
 </div>
 

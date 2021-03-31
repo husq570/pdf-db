@@ -15,7 +15,8 @@
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.4",
-        "spatie/laravel-permission": "^4.0"
+        "spatie/laravel-permission": "^4.0",
+        "spatie/pdf-to-image": "^2.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -31,7 +31,7 @@
                         <div class="max-w-2xl bg-white border-2 border-gray-300 p-5 rounded-md tracking-wide shadow-lg">
                             <div id="header" class="flex">
                                 <div class="w-32 rounded-md">
-                                    <img alt="{{ $document->name }}" src="https://picsum.photos/seed/picsum/200" />
+                                    <img alt="{{ $document->name }}" src="{{ url('storage/uploads/categories/'.$document->category_id.'/'.Str::slug($document->name).'.png') }}" />
                                 </div>
                                 <div id="body" class="flex flex-col ml-5">
                                     <h4 id="name" class="text-lg font-normal mb-2"><a href="{{ route('documents.show', ['document' => $document]) }}">{{ $document->name }}</a></h4>
